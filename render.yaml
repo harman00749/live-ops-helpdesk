@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: live-ops-helpdesk-api
+    runtime: node
+    plan: free
+    buildCommand: npm install --include=dev && npm run build --workspace server
+    startCommand: npm run start --workspace server
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: SEED_DEMO_TICKETS
+        value: "true"
+      - key: LOG_HTTP_REQUESTS
+        value: "true"

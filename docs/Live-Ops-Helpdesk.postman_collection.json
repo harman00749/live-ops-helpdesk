@@ -1,0 +1,47 @@
+{
+  "info": {
+    "name": "Live Ops Helpdesk — REST Validation",
+    "description": "REST checks for health, ticket loading, strict creation validation, and lock-protected updates. Real-time concurrency is demonstrated with two browser windows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000/api" },
+    { "key": "ticketId", "value": "REPLACE_AFTER_LIST_REQUEST" },
+    { "key": "socketId", "value": "REPLACE_WITH_ACTIVE_BROWSER_SOCKET_ID" }
+  ],
+  "item": [
+    {
+      "name": "1. Health Check",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/health" }
+    },
+    {
+      "name": "2. List Tickets",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/tickets" }
+    },
+    {
+      "name": "3. Search Critical Tickets",
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/tickets?search=delivery&status=open" }
+    },
+    {
+      "name": "4. Invalid Ticket Payload",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"ticketNumber\": \"X\",\n  \"subject\": \"Bad\",\n  \"unknownField\": true\n}" },
+        "url": "{{baseUrl}}/tickets"
+      }
+    },
+    {
+      "name": "5. Update Without Lock — Expected 423",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "x-socket-id", "value": "{{socketId}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"in_progress\",\n  \"resolution\": \"Testing server-side ownership.\",\n  \"assignedAgent\": \"Agent A\"\n}" },
+        "url": "{{baseUrl}}/tickets/{{ticketId}}"
+      }
+    }
+  ]
+}

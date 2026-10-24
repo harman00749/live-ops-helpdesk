@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.npm-cache/
+dist/
+coverage/
+*.log
+*.tsbuildinfo
+.DS_Store
+.vercel/
+.idea/
+.vscode/
